@@ -76,7 +76,7 @@ class SnakeViewModel : ViewModel() {
             }
             // If the new head is outside the grid, end the game
             else {
-                delay(1000)
+                delay(500)
                 _uiState.value = _uiState.value.copy(isFinished = true)
             }
         }
@@ -85,7 +85,7 @@ class SnakeViewModel : ViewModel() {
     private suspend fun checkCollisions() {
         val head = _uiState.value.snake.first()
         if (_uiState.value.snake.drop(1).contains(head)) {
-            delay(1000)
+            delay(500)
             _uiState.value = _uiState.value.copy(isFinished = true)
         }
     }
@@ -121,6 +121,6 @@ class SnakeViewModel : ViewModel() {
     }
 
     companion object {
-        const val GRID_SIZE = 15
+        const val GRID_SIZE = 20
     }
 }

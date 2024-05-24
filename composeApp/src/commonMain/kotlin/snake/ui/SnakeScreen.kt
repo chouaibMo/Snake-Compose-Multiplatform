@@ -6,19 +6,19 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -32,7 +32,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import snake.theme.Green
 import org.jetbrains.compose.resources.painterResource
 import snake.composeapp.generated.resources.Res
 import snake.composeapp.generated.resources.ic_down
@@ -41,6 +40,7 @@ import snake.composeapp.generated.resources.ic_pause
 import snake.composeapp.generated.resources.ic_play
 import snake.composeapp.generated.resources.ic_right
 import snake.composeapp.generated.resources.ic_up
+import snake.theme.Green
 
 @Composable
 fun SnakeScreen(viewModel: SnakeViewModel = viewModel { SnakeViewModel() }) {
@@ -52,7 +52,6 @@ fun SnakeScreen(viewModel: SnakeViewModel = viewModel { SnakeViewModel() }) {
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
             .padding(start = 16.dp, end = 16.dp, top = 60.dp, bottom = 30.dp)
     ) {
 
@@ -86,65 +85,45 @@ fun SnakeScreen(viewModel: SnakeViewModel = viewModel { SnakeViewModel() }) {
     }
 }
 
-
 @Composable
 fun GameGrid(uiState: SnakeUiState) {
-    val padding = 16.dp
-    val spacing = 1.dp
+    val gridSize = uiState.grid.size
 
-        //TODO use grid to calculate square size
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(gridSize),
+        horizontalArrangement = Arrangement.spacedBy(1.dp),
+        verticalArrangement = Arrangement.spacedBy(1.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .border(4.dp, Color.Black, RoundedCornerShape(4.dp))
+    ) {
+        items(uiState.grid.flatten().size) { index ->
+            val row = index / gridSize
+            val column = index % gridSize
+            val cell = Pair(row, column)
 
-//    val screenWidth = LocalConfiguration.current.screenWidthDp.dp - (padding * 2)
-//    val screenHeight = LocalConfiguration.current.screenHeightDp.dp - (padding * 2)
-//    val totalSpacing = spacing * (uiState.grid.size - 1)
-//    val availableWidth = screenWidth - totalSpacing
-//    val availableHeight = screenHeight - totalSpacing
-    val squareSize = 23.dp //min(availableWidth, availableHeight) / uiState.grid.size
+            val snakeSize = uiState.snake.size
+            val headPosition = uiState.snake.first()
 
-    BoxWithConstraints {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(spacing),
-            modifier = Modifier
-                .fillMaxWidth()
-                .border(4.dp, Color.Black, RoundedCornerShape(4.dp))
-        ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(spacing)
-            ) {
-                uiState.grid.forEachIndexed { x, row ->
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(spacing)
-                    ) {
-                        row.forEachIndexed { y, _ ->
-                            val cell = Pair(x, y)
-                            val snakeSize = uiState.snake.size
-                            val headPosition = uiState.snake.first()
+            val minAlphaValue = 0.4f
+            val currentAlphaValue = (snakeSize - uiState.snake.indexOf(cell)).toFloat() / snakeSize
+            val alpha = maxOf(currentAlphaValue, minAlphaValue)
 
-                            val minAlphaValue = 0.4f
-                            val currentAlphaValue = (snakeSize - uiState.snake.indexOf(cell)).toFloat() / snakeSize
-                            val alpha = maxOf(currentAlphaValue, minAlphaValue)
-
-                            val color = when {
-                                cell == headPosition -> Color.Black
-                                uiState.snake.contains(cell) -> Color.Black.copy(alpha = alpha)
-                                uiState.apple == cell -> Green
-                                else -> Color.White
-                            }
-                            Box(
-                                modifier = Modifier
-                                    .size(squareSize)
-                                    //.shadow(6.dp, RoundedCornerShape(2.dp))
-                                    .clip(RoundedCornerShape(4.dp))
-                                    .background(color)
-                            )
-                        }
-                    }
-                }
+            val color = when {
+                cell == headPosition -> Color.Black
+                uiState.snake.contains(cell) -> Color.Black.copy(alpha = alpha)
+                uiState.apple == cell -> Green
+                else -> Color.White
             }
+            Box(
+                modifier = Modifier
+                    .aspectRatio(1f)
+                    .clip(RoundedCornerShape(4.dp))
+                    .background(color)
+            )
         }
     }
+
 }
 
 @Composable
