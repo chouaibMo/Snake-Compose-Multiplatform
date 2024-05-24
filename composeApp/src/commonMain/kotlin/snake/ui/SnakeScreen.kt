@@ -1,6 +1,5 @@
-package com.chouaibmo.pathfinder.snake
+package snake.ui
 
-import android.provider.ContactsContract.CommonDataKinds.Im
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -17,33 +16,34 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.chouaibmo.pathfinder.R
+import snake.theme.Green
+import org.jetbrains.compose.resources.painterResource
+import snake.composeapp.generated.resources.Res
+import snake.composeapp.generated.resources.ic_down
+import snake.composeapp.generated.resources.ic_left
+import snake.composeapp.generated.resources.ic_pause
+import snake.composeapp.generated.resources.ic_play
+import snake.composeapp.generated.resources.ic_right
+import snake.composeapp.generated.resources.ic_up
 
 @Composable
-fun SnakeScreen(viewModel: SnakeViewModel = viewModel()) {
+fun SnakeScreen(viewModel: SnakeViewModel = viewModel { SnakeViewModel() }) {
 
     val uiState = viewModel.uiState.value
 
@@ -51,9 +51,9 @@ fun SnakeScreen(viewModel: SnakeViewModel = viewModel()) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
-            .verticalScroll(rememberScrollState())
             .fillMaxSize()
-            .padding(horizontal = 16.dp, vertical = 40.dp)
+            .verticalScroll(rememberScrollState())
+            .padding(start = 16.dp, end = 16.dp, top = 60.dp, bottom = 30.dp)
     ) {
 
 
@@ -86,18 +86,20 @@ fun SnakeScreen(viewModel: SnakeViewModel = viewModel()) {
     }
 }
 
+
 @Composable
 fun GameGrid(uiState: SnakeUiState) {
     val padding = 16.dp
     val spacing = 1.dp
 
+        //TODO use grid to calculate square size
 
-    val screenWidth = LocalConfiguration.current.screenWidthDp.dp - (padding * 2)
-    val screenHeight = LocalConfiguration.current.screenHeightDp.dp - (padding * 2)
-    val totalSpacing = spacing * (uiState.grid.size - 1)
-    val availableWidth = screenWidth - totalSpacing
-    val availableHeight = screenHeight - totalSpacing
-    val squareSize = min(availableWidth, availableHeight) / uiState.grid.size
+//    val screenWidth = LocalConfiguration.current.screenWidthDp.dp - (padding * 2)
+//    val screenHeight = LocalConfiguration.current.screenHeightDp.dp - (padding * 2)
+//    val totalSpacing = spacing * (uiState.grid.size - 1)
+//    val availableWidth = screenWidth - totalSpacing
+//    val availableHeight = screenHeight - totalSpacing
+    val squareSize = 23.dp //min(availableWidth, availableHeight) / uiState.grid.size
 
     BoxWithConstraints {
         Column(
@@ -120,15 +122,14 @@ fun GameGrid(uiState: SnakeUiState) {
                             val snakeSize = uiState.snake.size
                             val headPosition = uiState.snake.first()
 
-                            val minAlpha = 0.3f
-                            val alpha = maxOf((snakeSize - uiState.snake.indexOf(cell)).toFloat() / snakeSize, minAlpha)
-
-
+                            val minAlphaValue = 0.4f
+                            val currentAlphaValue = (snakeSize - uiState.snake.indexOf(cell)).toFloat() / snakeSize
+                            val alpha = maxOf(currentAlphaValue, minAlphaValue)
 
                             val color = when {
-                                Pair(x, y) == headPosition -> Color.Black
-                                uiState.snake.contains(Pair(x, y)) -> Color.Black.copy(alpha = alpha)
-                                uiState.apple == cell -> Color(0xFF4287f5) // TODO: move to colors file
+                                cell == headPosition -> Color.Black
+                                uiState.snake.contains(cell) -> Color.Black.copy(alpha = alpha)
+                                uiState.apple == cell -> Green
                                 else -> Color.White
                             }
                             Box(
@@ -156,29 +157,25 @@ fun DirectionButtons(viewModel: SnakeViewModel) {
 
 
         Image(
-            painter = painterResource(id = R.drawable.ic_up),
+            painter = painterResource(Res.drawable.ic_up),
             contentDescription = "Up",
             modifier = Modifier
                 .size(70.dp)
-                .clickable {
-                    viewModel.onDirectionChanged(Direction.UP)
-                }
+                .clickable { viewModel.onDirectionChanged(Direction.UP) }
         )
 
         Row(
             horizontalArrangement = Arrangement.spacedBy(-8.dp)
         ) {
             Image(
-                painter = painterResource(id = R.drawable.ic_left),
+                painter = painterResource(Res.drawable.ic_left),
                 contentDescription = "Left",
                 modifier = Modifier
                     .size(70.dp)
-                    .clickable {
-                        viewModel.onDirectionChanged(Direction.LEFT)
-                    }
+                    .clickable { viewModel.onDirectionChanged(Direction.LEFT) }
             )
             Image(
-                painter = painterResource(id = if (viewModel.uiState.value.isPaused) R.drawable.ic_play else R.drawable.ic_pause),
+                painter = painterResource(if (viewModel.uiState.value.isPaused) Res.drawable.ic_play else Res.drawable.ic_pause),
                 contentDescription = "Play/Pause",
                 modifier = Modifier
                     .size(70.dp)
@@ -187,7 +184,7 @@ fun DirectionButtons(viewModel: SnakeViewModel) {
                     }
             )
             Image(
-                painter = painterResource(id = R.drawable.ic_right),
+                painter = painterResource(Res.drawable.ic_right),
                 contentDescription = "Right",
                 modifier = Modifier
                     .size(70.dp)
@@ -198,7 +195,7 @@ fun DirectionButtons(viewModel: SnakeViewModel) {
         }
 
         Image(
-            painter = painterResource(id = R.drawable.ic_down),
+            painter = painterResource(Res.drawable.ic_down),
             contentDescription = "Down",
             modifier = Modifier
                 .size(70.dp)

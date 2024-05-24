@@ -1,6 +1,5 @@
-package com.chouaibmo.pathfinder.snake
+package snake.ui
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -12,7 +11,7 @@ import kotlin.random.Random
 
 class SnakeViewModel : ViewModel() {
 
-    private var gameJob: Job? = null // To hold the reference to the game loop coroutine
+    private var gameJob: Job? = null
 
 
     private val _uiState = mutableStateOf(SnakeUiState())
@@ -35,7 +34,6 @@ class SnakeViewModel : ViewModel() {
         }
 
         gameJob?.invokeOnCompletion {
-            Log.e("SNAKE", "Game over! Final score: ${uiState.value.score}")
             if (uiState.value.score > uiState.value.highScore) {
                 _uiState.value = uiState.value.copy(highScore = uiState.value.score)
             }

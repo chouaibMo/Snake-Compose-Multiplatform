@@ -1,22 +1,46 @@
-This is a Kotlin Multiplatform project targeting Android, iOS, Web, Desktop.
+<p> 
+  <img src="./screenshots/cover.png" alt="cover">
+</p>
 
-* `/composeApp` is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - `commonMain` is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    `iosMain` would be the right folder for such calls.
+<a href="https://github.com/chouaibMo/">
+<img src="./screenshots/logo.png" align="right" width="12%"/>
+</a>
 
-* `/iosApp` contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform, 
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+## 💡 Description
+A multiplatform Snake game built with Jetpack Compose Multiplatform, inspired by the classic Snake game.
 
+## 📱 Supported platforms
+this project supports the following platforms:
+* Android
+* iOS
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html),
-[Compose Multiplatform](https://github.com/JetBrains/compose-multiplatform/#compose-multiplatform),
-[Kotlin/Wasm](https://kotl.in/wasm/)…
+Browser and desktop support are not available yet. It will be added in the future.
+Note: the project is still in development and not all features are available on all platforms.
 
-**Note:** Compose/Web is Experimental and may be changed at any time. Use it only for evaluation purposes.
-We would appreciate your feedback on Compose/Web and Kotlin/Wasm in the public Slack channel [#compose-web](https://slack-chats.kotlinlang.org/c/compose-web).
-If you face any issues, please report them on [GitHub](https://github.com/JetBrains/compose-multiplatform/issues).
+## ✨ Features
+this project integrates the following features:
+* Play the classic Snake game.
+* Change direction using the arrow keys or swipe gestures.
+* Pause and resume the game.
+* High score counter.
 
-You can open the web application by running the `:composeApp:wasmJsBrowserDevelopmentRun` Gradle task.
+## 🤝 Contribution
+Most of the features are not completed. Feel free to contribute to this project by adding new features, fixing bugs, or improving the code quality.
+
+## 💙 Find this repository useful?
+Support it by staring and sharing it :star:
+
+## 📜 License
+```xml
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+```

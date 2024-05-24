@@ -1,4 +1,4 @@
-package com.chouaibmo.pathfinder.snake
+package snake.ui
 
 enum class Direction {
     UP,
