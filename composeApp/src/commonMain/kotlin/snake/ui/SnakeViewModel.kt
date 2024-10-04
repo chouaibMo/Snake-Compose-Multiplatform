@@ -110,8 +110,18 @@ class SnakeViewModel : ViewModel() {
         return position
     }
 
+    private fun setPauseState(isPaused: Boolean) {
+        if (_uiState.value.isPaused != isPaused) {
+            _uiState.value = _uiState.value.copy(isPaused = isPaused)
+        }
+    }
+
     fun togglePause() {
-        _uiState.value = _uiState.value.copy(isPaused = !uiState.value.isPaused)
+        setPauseState(!uiState.value.isPaused)
+    }
+
+    fun pauseGame() {
+        setPauseState(true)
     }
 
     fun restartGame() {
